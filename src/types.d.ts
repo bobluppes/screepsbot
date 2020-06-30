@@ -12,6 +12,10 @@ interface Memory {
   log: any;
 }
 
+interface SpawnOptions {
+  memory: any;
+}
+
 // `global` extension samples
 declare namespace NodeJS {
   interface Global {
