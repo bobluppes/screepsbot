@@ -86,7 +86,11 @@ export class SpawnManager {
         // Build the creep body
         let body: BodyPartConstant[];
         let cost: number;
-        if (role === 'miner') {
+        if (this.harvesters * this.miners.length * this.haulers.length * this.upgraders * this.builders === 0) {
+            // No creeps => build a quick and cheap one
+            body = [WORK, CARRY, MOVE];
+            cost = 200;
+        } else if (role === 'miner') {
             body = [MOVE, CARRY, WORK];
             cost = 200;
             const workCost = 100;
@@ -113,6 +117,8 @@ export class SpawnManager {
                 cost += 200;
             }
         }
+
+        console.log(`We need a ${role} with cost ${cost}`);
 
         if (this.energyAvailable >= cost) {
             if (role !== '') {
