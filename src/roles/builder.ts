@@ -10,26 +10,61 @@ export function roleBuilder(creep: Creep) {
     }
 
     if (creep.memory.working === true) {
-        const target = creep.pos.findClosestByPath(FIND_SOURCES);
+
+        let target = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+            filter: (i) => (i.structureType === STRUCTURE_CONTAINER) &&
+                i.store.getUsedCapacity(RESOURCE_ENERGY) > 0
+        });
+
+        if (!target) {
+            target = creep.pos.findClosestByRange(FIND_MY_STRUCTURES, {
+                filter: (i) => (i.structureType === STRUCTURE_EXTENSION) &&
+                    i.store.getUsedCapacity(RESOURCE_ENERGY) > 0
+            })
+        }
+
         if (target) {
-            if (creep.harvest(target) === ERR_NOT_IN_RANGE) {
+            if (creep.withdraw(target, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
                 creep.moveTo(target.pos);
             }
         }
     } else if (creep.memory.working === false) {
-        // @ts-ignore
-        const targets: ConstructionSite[] = creep.room.find(FIND_CONSTRUCTION_SITES);
+        let site: boolean = true;
+        let target: any = creep.room.find(FIND_CONSTRUCTION_SITES, {
+            filter: (i) => (i.structureType === STRUCTURE_EXTENSION)
+        })[0];
 
-        // Fall back to controller if no empty structures
-        let target = null;
-        if (targets.length !== 0) {
-            target = targets[0];
+        if (!target) {
+            target = creep.pos.findClosestByRange(FIND_STRUCTURES, {
+                filter: (i) => (i.hits < (i.hitsMax / 2)) && (i.structureType != STRUCTURE_WALL || i.hits < 100)
+            });
+            site = false;
+        }
+
+        if (!target) {
+            target = creep.room.find(FIND_CONSTRUCTION_SITES)[0];
+            site = true;
+        }
+
+        if (!target) {
+            target = creep.pos.findClosestByRange(FIND_STRUCTURES, {
+                filter: (i) => (i.hits < i.hitsMax)
+            });
+            site = false;
         }
 
         if (target) {
-            if (creep.build(target) === ERR_NOT_IN_RANGE) {
-                creep.moveTo(target.pos);
+            if (site) {
+                // @ts-ignore
+                if (creep.build(target) === ERR_NOT_IN_RANGE) {
+                    creep.moveTo(target.pos);
+                }
+            } else {
+                if (creep.repair(target) === ERR_NOT_IN_RANGE) {
+                    creep.moveTo(target.pos);
+                }
             }
+
         }
     }
 

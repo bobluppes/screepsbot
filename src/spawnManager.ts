@@ -7,7 +7,7 @@ import { forEach } from "lodash";
 
 export class SpawnManager {
 
-    private static maxHarvesters: number = 3;
+    private static maxHarvesters: number = 1;
     private static maxUpgraders: number = 1;
     private static maxBuilders: number = 2;
 
@@ -117,8 +117,6 @@ export class SpawnManager {
                 cost += 200;
             }
         }
-
-        console.log(`We need a ${role} with cost ${cost}`);
 
         if (this.energyAvailable >= cost) {
             if (role !== '') {

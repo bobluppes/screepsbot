@@ -28,13 +28,14 @@ export function roleHauler(creep: Creep) {
                 i.energy < i.energyCapacity
         });
 
-        // Fall back to controller if no empty structures
+        // Fall back to containers if no empty structures
         let target: Structure;
         if (targets.length !== 0) {
             target = targets[0];
         } else {
-            target = creep.room.find(FIND_MY_STRUCTURES, {
-                filter: (i) => (i.structureType === STRUCTURE_CONTROLLER)
+            target = creep.room.find(FIND_STRUCTURES, {
+                filter: (i) => (i.structureType === STRUCTURE_CONTAINER) &&
+                    i.store.getFreeCapacity(RESOURCE_ENERGY) > 0
             })[0];
         }
 
