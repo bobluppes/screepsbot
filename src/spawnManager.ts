@@ -50,7 +50,7 @@ export class SpawnManager {
 
         // Determine the role
         let role: string = '';
-        let sourceId: string = '';
+        let source: any = null;
         if (this.harvesters < this.maxHarvesters) {
             role = 'harvester';
         } else if (this.upgraders < this.maxUpgraders) {
@@ -61,11 +61,11 @@ export class SpawnManager {
             role = 'miner';
             let coveredSources: string[] = [];
             this.miners.forEach(miner => {
-                coveredSources.push(miner.memory.source)
+                coveredSources.push(miner.memory.source.id)
             });
             this.sources.forEach(el => {
                 if (!coveredSources.includes(el.id)) {
-                    sourceId = el.id;
+                    source = el;
                     // TODO: Break
                 }
             });
@@ -73,11 +73,11 @@ export class SpawnManager {
             role = 'hauler';
             let coveredSources: string[] = [];
             this.haulers.forEach(hauler => {
-                coveredSources.push(hauler.memory.source)
+                coveredSources.push(hauler.memory.source.id)
             });
             this.miners.forEach(miner => {
-                if (!coveredSources.includes(miner.memory.source)) {
-                    sourceId = miner.memory.source;
+                if (!coveredSources.includes(miner.memory.source.id)) {
+                    source = miner.memory.source;
                     // TODO: Break
                 }
             })
@@ -121,7 +121,7 @@ export class SpawnManager {
         if (this.energyAvailable >= cost) {
             if (role !== '') {
                 spawn.room.visual.text('Spawning ' + role, spawn.pos.x, spawn.pos.y);
-                spawn.spawnCreep(body, "creep_" + Game.time, { memory: { role: role, working: false, source: sourceId } });
+                spawn.spawnCreep(body, "creep_" + Game.time, { memory: { role: role, working: false, source: source, container: false } });
             }
         }
 

@@ -16,12 +16,12 @@ export function roleBuilder(creep: Creep) {
                 i.store.getUsedCapacity(RESOURCE_ENERGY) > 0
         });
 
-        if (!target) {
-            target = creep.pos.findClosestByRange(FIND_MY_STRUCTURES, {
-                filter: (i) => (i.structureType === STRUCTURE_EXTENSION) &&
-                    i.store.getUsedCapacity(RESOURCE_ENERGY) > 0
-            })
-        }
+        // if (!target) {
+        //     target = creep.pos.findClosestByRange(FIND_MY_STRUCTURES, {
+        //         filter: (i) => (i.structureType === STRUCTURE_EXTENSION) &&
+        //             i.store.getUsedCapacity(RESOURCE_ENERGY) > 0
+        //     })
+        // }
 
         if (target) {
             if (creep.withdraw(target, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
